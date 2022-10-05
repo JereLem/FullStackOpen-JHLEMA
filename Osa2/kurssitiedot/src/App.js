@@ -14,11 +14,16 @@ const Content = ({ parts }) => {
   return parts.map((part) => <Part key={part.id} partinfo={part} />);
 };
 
+const Total = (parts) => {
+  return parts.reduce((total, part) => total + part.exercises, 0);
+};
+
 const Course = ({ course }) => {
   return (
     <>
       <Header text={course.name} />
       <Content parts={course.parts} />
+      <h4> Total of {Total(course.parts)} exercises </h4>
     </>
   );
 };
