@@ -6,9 +6,13 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const filteredPersons = persons.filter(person => person.name.includes(searchQuery));
 
   const submit = (props) =>{
     props.preventDefault();
+
+    
 
     const existingPerson = persons.find(person => person.name === newName);
     if (existingPerson) {
@@ -24,7 +28,20 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <h2>Search</h2>
+      <form>
+        <div>
+          search:{" "}
+          <input value={searchQuery} onChange={(props) => setSearchQuery(props.target.value)} />
+          <p>
+          {filteredPersons.map(person =>
+            <p key={person.name}> {person.name} {person.phone} </p>
+          )}
+          </p>
+          
+        </div>
+      </form>
       <form onSubmit={submit}>
         <div>
           name:{" "}
@@ -38,12 +55,6 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
-      <ul>
-        {persons.map(person =>
-          <p key={person.name}> {person.name} {person.phone} </p>
-        )}
-      </ul>
     </div>
   )
 
