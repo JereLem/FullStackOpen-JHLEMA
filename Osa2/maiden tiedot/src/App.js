@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const App = () => {
-  const [countries, setCountries] = useState([])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [countries, setCountries] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState({});
+
 
   useEffect(() => {
     axios.get('https://restcountries.com/v2/all')
@@ -13,6 +15,10 @@ const App = () => {
   }, [])
 
   const filteredcountries = countries.filter(country => country.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const handleClick = (country) => {
+    setSelectedCountry(country);
+  }
 
   const SearchFilter = (props) => {
     return (
@@ -30,7 +36,7 @@ const App = () => {
   const CountryList = (props) => {
     return (
       <div>
-        {props.countries.map(country => <p key={country.name}>{country.name}</p> )}
+        {props.countries.map(country => <p key={country.name}>{country.name}<button key="button" onClick={() => handleClick(country)}>Show</button></p>)}
       </div>
     )
   }
@@ -56,6 +62,7 @@ const App = () => {
       <SearchFilter searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       {filteredcountries.length > 10 ? <div>Too many matches, specify another filter</div> : 
       filteredcountries.length === 1 ? <CountryDetails country={filteredcountries[0]} /> : filteredcountries.length === 0 ? <div>No country found</div> :<CountryList countries={filteredcountries} />}
+      {selectedCountry.name ? <CountryDetails country={selectedCountry} /> : null}
     </div>
   )
 }
