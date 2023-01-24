@@ -5,6 +5,8 @@ const App = () => {
   const [countries, setCountries] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState({});
+  const [weather, setWeather] = useState({});
+  const [error, setError] = useState('');
 
 
   useEffect(() => {
@@ -16,8 +18,15 @@ const App = () => {
 
   const filteredcountries = countries.filter(country => country.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const handleClick = (country) => {
+  const handleClick = (country) => { 
     setSelectedCountry(country);
+        axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&appid=${"API_KEY"}`)
+    .then(response => {
+      setWeather(response.data);
+    })
+    .catch(error => {
+      setError(error.response.data.message);
+    });
   }
 
   const SearchFilter = (props) => {
@@ -51,10 +60,14 @@ const App = () => {
         <ul>
           {country.languages.map(language => <li key={language.iso639_1}>{language.name}</li>)}
         </ul>
+        {error ? <div>{error}</div> : <div>
+          <h3>Weather in {country.capital}</h3>
+          <p>Temperature: {weather.main && weather.main.temp?weather.main.temp: "no data"} Celsius</p>
+          
+    </div>}
       </div>
     )
   }
-
 
   return (
     <div>
@@ -68,4 +81,3 @@ const App = () => {
 }
 
 export default App;
-
