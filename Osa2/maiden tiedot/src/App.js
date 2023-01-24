@@ -6,7 +6,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    axios.get('https://restcountries.com/v2/all?fields=name')
+    axios.get('https://restcountries.com/v2/all')
     .then(response => {
       setCountries(response.data)
     });
@@ -35,13 +35,30 @@ const App = () => {
     )
   }
 
+  const CountryDetails = (props) => {
+    const country = props.country;
+    return (
+      <div>
+        <h2>{country.name}</h2>
+        <img src={country.flags.svg} width="250" height="150" alt={`Flag of ${country.name}`} />
+        <h3>Languages</h3>
+        <ul>
+          {country.languages.map(language => <li key={language.iso639_1}>{language.name}</li>)}
+        </ul>
+      </div>
+    )
+  }
+
+
   return (
     <div>
       <h1>Country Finder</h1>
       <SearchFilter searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      {filteredcountries.length > 10 ? <div>Too many matches, specify another filter</div> : <CountryList countries={filteredcountries} />}
+      {filteredcountries.length > 10 ? <div>Too many matches, specify another filter</div> : 
+      filteredcountries.length === 1 ? <CountryDetails country={filteredcountries[0]} /> : filteredcountries.length === 0 ? <div>No country found</div> :<CountryList countries={filteredcountries} />}
     </div>
   )
 }
 
 export default App;
+
